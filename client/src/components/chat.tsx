@@ -4,6 +4,7 @@ import { useSocket } from "../context"
 type User = {
   userId: string
   username: string
+  online: boolean
 }
 
 export default function Chat() {
@@ -30,7 +31,7 @@ export default function Chat() {
       setMessage((prev) => prev.concat(msg))
     })
 
-    socket.on("users", (users) => {
+    socket.on("usersChange", (users) => {
       console.log(users)
       setUsers(users)
     })
@@ -49,17 +50,24 @@ export default function Chat() {
   return (
     <div>
       <h3>chat</h3>
-      <div style={{ border: "1px solid" }}>
-        <h5>users</h5>
-        {users.map((user, i) => {
-          return <p key={i}>{user.username}</p>
-        })}
-      </div>
-      <div style={{ border: "1px solid" }}>
-        <h5>messages</h5>
-        {message.map((m, i) => {
-          return <p key={i}>{m}</p>
-        })}
+      <div style={{ display: "flex" }}>
+        <div style={{ border: "1px solid" }}>
+          <h5>users</h5>
+          {users.map((user, i) => {
+            return (
+              <p key={i}>
+                {user.username}
+                {user.online ? 1 : 0}
+              </p>
+            )
+          })}
+        </div>
+        <div style={{ border: "1px solid" }}>
+          <h5>messages</h5>
+          {message.map((m, i) => {
+            return <p key={i}>{m}</p>
+          })}
+        </div>
       </div>
       <form>
         <input type="text" value={input} onChange={handleInputChange} />
