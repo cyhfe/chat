@@ -1,41 +1,68 @@
 import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react"
 import { useSocket } from "../context"
+
+type User = {
+  userId: string
+  username: string
+}
+
 export default function Chat() {
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState<string[]>([])
+  const [input, setInput] = useState("")
+  const [users, setUsers] = useState<User[]>([])
   const socket = useSocket()
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    setMessage(e.target.value)
+    setInput(e.target.value)
   }
 
   const handleSubmit: MouseEventHandler = (e) => {
     e.preventDefault()
-    socket.emit("sendMessage", message)
-    setMessage("")
+    socket.emit("message", input)
+    setInput("")
   }
 
   useEffect(() => {
     console.log("chat effect")
-    socket.on("connect", () => {
-      console.log(socket.id) // x8WIv7-mJelg7on_ALbx
-    })
-
-    socket.on("disconnect", () => {
-      console.log(socket.id) // undefined
-    })
-
+    socket.emit("join")
     socket.on("message", (msg: string) => {
-      // console.log(msg) // x8WIv7-mJelg7on_ALbx
+      setMessage((prev) => prev.concat(msg))
     })
+
+    socket.on("users", (users) => {
+      console.log(users)
+      setUsers(users)
+    })
+
+    socket.onAny((event, ...args) => {
+      console.log(event, args)
+    })
+
+    return () => {
+      console.log("clear")
+      socket.off("message")
+      socket.off("users")
+    }
   }, [socket])
 
   return (
     <div>
       <h3>chat</h3>
-
+      <div style={{ border: "1px solid" }}>
+        <h5>users</h5>
+        {users.map((user, i) => {
+          return <p key={i}>{user.username}</p>
+        })}
+      </div>
+      <div style={{ border: "1px solid" }}>
+        <h5>messages</h5>
+        {message.map((m, i) => {
+          return <p key={i}>{m}</p>
+        })}
+      </div>
       <form>
-        <input type="text" value={message} onChange={handleInputChange} />
+        <input type="text" value={input} onChange={handleInputChange} />
         <button onClick={handleSubmit}>type</button>
       </form>
     </div>
