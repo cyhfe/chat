@@ -1,5 +1,5 @@
-import Login from "./components/login"
-import Chat from "./components/chat"
+import Login from "./pages/login"
+import Chat from "./pages/chat"
 import { useState } from "react"
 export default function App() {
   const [isConnected, setIsConnected] = useState(false)

@@ -17,8 +17,6 @@ export default function Login({ isConnected, setIsConnected }: LoginProps) {
   }
 
   React.useEffect(() => {
-    console.log("effect listen connect")
-
     socket.on("connect", () => {
       setIsConnected(true)
     })
@@ -40,6 +38,11 @@ export default function Login({ isConnected, setIsConnected }: LoginProps) {
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>login</button>
     </div>

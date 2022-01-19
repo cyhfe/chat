@@ -1,3 +1,3 @@
 export default function Main() {
-  return <div>placeholder</div>
+  return <div>聊天</div>
 }
