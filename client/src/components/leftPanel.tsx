@@ -1,3 +1,7 @@
 export default function LeftPanel() {
-  return <div>placeholder</div>
+  return (
+    <div>
+      <div>会话</div>
+    </div>
+  )
 }
